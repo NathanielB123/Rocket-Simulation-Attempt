@@ -99,7 +99,7 @@ class Window(Frame):
             DisplacementList.append(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)-StartDisplacement)
             VelocityList.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
             AccelerationList.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
-            YList.append(Displacement[1]-PlanetRadius)
+            YList.append(Displacement[1]-PlanetRadius) #Y is relative to just on top of Earth at rocket launch point
             XList.append(Displacement[0])
             ZList.append(Displacement[2])
 
@@ -108,7 +108,7 @@ class Window(Frame):
         plt.figure(1)
         plt.plot(TimeList,DisplacementList) 
 
-        plt.ylabel("Displacement From Start(m)")
+        plt.ylabel("Displacement(m)")
         plt.xlabel("Time (s)")
 
         plt.grid()
