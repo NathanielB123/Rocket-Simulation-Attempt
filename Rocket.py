@@ -54,20 +54,20 @@ class Window(Frame):
         Acceleration=[0,0,0]
         Velocity=[0,0,0]
         Displacement=[0.01,PlanetRadius+10,0.01]
-        TimeInterval = 0.001
+        StartDisplacement=m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)
+        TimeInterval = 0.01
 
         Thrust = [(m.sin(m.radians(RocketAngle)) * RocketThrust), #X
                   (m.cos(m.radians(RocketAngle)) * (m.cos(m.radians(RocketAngle2)) * RocketThrust)), #Y
                   (m.sin(m.radians(RocketAngle2)) * RocketThrust)] #Z
-        tlist = [0]
-        ylist = [0]
-        y2list = [0]
-        y3list = [0]
-        x4list=[0]
-        y4list=[0]
+        TimeList = []
+        DisplacementList = []
+        VelocityList = []
+        AccelerationList = []
+        XList=[]
+        YList=[]
 
-        while m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) >= PlanetRadius and T<1000:
-            #print(m.sqrt(Displacement[0]**2+(Displacement[1]-PlanetRadius)**2+Displacement[2]**2))
+        while m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) >= PlanetRadius and T<10000:
             if RocketFuel - RocketFuelUse*T>0:
                 TotalMass = RocketMass + (RocketFuel - RocketFuelUse*T)
             else:
@@ -92,43 +92,50 @@ class Window(Frame):
             Displacement[2] += Velocity[2] * TimeInterval
             T += TimeInterval
 
-            tlist.append(T)
-            #ylist.append(m.sqrt(Displacement[0]**2+(Displacement[1]-PlanetRadius)**2+Displacement[2]**2))
-            #y2list.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
-            #y3list.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
-            ylist.append(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)-PlanetRadius)
-            y2list.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
-            y3list.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
-            y4list.append(Displacement[1]-PlanetRadius)
-            x4list.append(Displacement[0])
+            TimeList.append(T)
+            #DisplacementList.append(m.sqrt(Displacement[0]**2+(Displacement[1]-PlanetRadius)**2+Displacement[2]**2))
+            #VelocityList.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
+            #AccelerationList.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
+            DisplacementList.append(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)-StartDisplacement)
+            VelocityList.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
+            AccelerationList.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
+            YList.append(Displacement[1]-PlanetRadius)
+            XList.append(Displacement[0])
+            ZList.append(Displacement[2])
+
+        print(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) >= PlanetRadius)
         
         plt.figure(1)
-        plt.plot(tlist,ylist) 
+        plt.plot(TimeList,DisplacementList) 
 
-        plt.ylabel("Displacement (m)")
+        plt.ylabel("Displacement From Start(m)")
         plt.xlabel("Time (s)")
 
         plt.grid()
 
         plt.figure(2)
-        plt.plot(tlist,y2list)
+        plt.plot(TimeList,VelocityList)
         plt.ylabel("Velocity (ms^-1)") 
         plt.xlabel("Time (s)")
         plt.grid()
 
         plt.figure(3)
-        plt.plot(tlist,y3list)
+        plt.plot(TimeList,AccelerationList)
         plt.ylabel("Acceleration (ms^-2)") 
         plt.xlabel("Time (s)")
         plt.grid()
 
         plt.figure(4)
-        plt.plot(x4list,y4list)
+        plt.plot(XList,YList)
         plt.ylabel("Y (m)") 
         plt.xlabel("X (m)")
         plt.grid()
-        print(x4list[1000])
-        print(y4list[1000])
+
+        plt.figure(4)
+        plt.plot(ZList,YList)
+        plt.ylabel("Y (m)") 
+        plt.xlabel("Z (m)")
+        plt.grid()
 
         plt.show()
 
