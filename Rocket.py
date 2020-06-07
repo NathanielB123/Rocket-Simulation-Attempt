@@ -54,7 +54,6 @@ class Window(Frame):
         Acceleration=[0,0,0]
         Velocity=[0,0,0]
         Displacement=[0.01,PlanetRadius+10,0.01]
-        StartDisplacement=m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)
         TimeInterval = 0.01
 
         Thrust = [(m.sin(m.radians(RocketAngle)) * RocketThrust), #X
@@ -66,6 +65,7 @@ class Window(Frame):
         AccelerationList = []
         XList=[]
         YList=[]
+        ZList=[]
 
         while m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) >= PlanetRadius and T<10000:
             if RocketFuel - RocketFuelUse*T>0:
@@ -73,8 +73,8 @@ class Window(Frame):
             else:
                 TotalMass = RocketMass
             AccDueToG = 6.67408 * 10 ** -11 * PlanetMass / ((m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)) ** 2) * -1
-            AccDueToGAngle = m.degrees(m.atan(Displacement[1]/Displacement[0]))+90
-            AccDueToGAngle2 = m.degrees(m.atan(Displacement[1]/Displacement[2]))+90
+            AccDueToGAngle = m.degrees(m.atan2(Displacement[1],Displacement[0]))+90
+            AccDueToGAngle2 = m.degrees(m.atan2(Displacement[1],Displacement[2]))+90
             if RocketFuel - RocketFuelUse*T>0:
                 Acceleration[0] = (Thrust[0] / TotalMass) + AccDueToG * m.sin(m.radians(AccDueToGAngle))
                 Acceleration[1] = (Thrust[1] / TotalMass) + AccDueToG * m.cos(m.radians(AccDueToGAngle)) * (m.cos(m.radians(AccDueToGAngle2)))
@@ -96,19 +96,19 @@ class Window(Frame):
             #DisplacementList.append(m.sqrt(Displacement[0]**2+(Displacement[1]-PlanetRadius)**2+Displacement[2]**2))
             #VelocityList.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
             #AccelerationList.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
-            DisplacementList.append(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)-StartDisplacement)
+            DisplacementList.append(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2)-PlanetRadius)
             VelocityList.append(m.sqrt(Velocity[0]**2+Velocity[1]**2+Velocity[2]**2))
             AccelerationList.append(m.sqrt(Acceleration[0]**2+Acceleration[1]**2+Acceleration[2]**2))
             YList.append(Displacement[1]-PlanetRadius) #Y is relative to just on top of Earth at rocket launch point
             XList.append(Displacement[0])
             ZList.append(Displacement[2])
 
-        print(m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) >= PlanetRadius)
+        print("Hit the ground." if m.sqrt(Displacement[0]**2+Displacement[1]**2+Displacement[2]**2) < PlanetRadius else "Did not hit the ground.")
         
         plt.figure(1)
         plt.plot(TimeList,DisplacementList) 
 
-        plt.ylabel("Displacement(m)")
+        plt.ylabel("Distance from planet surface(m)")
         plt.xlabel("Time (s)")
 
         plt.grid()
@@ -124,18 +124,18 @@ class Window(Frame):
         plt.ylabel("Acceleration (ms^-2)") 
         plt.xlabel("Time (s)")
         plt.grid()
-
-        plt.figure(4)
-        plt.plot(XList,YList)
-        plt.ylabel("Y (m)") 
-        plt.xlabel("X (m)")
-        plt.grid()
-
-        plt.figure(4)
-        plt.plot(ZList,YList)
-        plt.ylabel("Y (m)") 
-        plt.xlabel("Z (m)")
-        plt.grid()
+        if max(XList)>1:
+            plt.figure(4)
+            plt.plot(XList,YList)
+            plt.ylabel("Y (m)") 
+            plt.xlabel("X (m)")
+            plt.grid()
+        if max(ZList)>1:
+            plt.figure(5)
+            plt.plot(ZList,YList)
+            plt.ylabel("Y (m)") 
+            plt.xlabel("Z (m)")
+            plt.grid()
 
         plt.show()
 
